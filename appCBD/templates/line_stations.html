@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Estaciones de {{ linea.nombre_linea }}</title>
+</head>
+<body>
+  <h1>Estaciones de la línea {{ linea.nombre_linea }}</h1>
+  <ol>
+    {% for estacion in estaciones %}
+      <li>{{ estacion.nombre_estacion }}</li>
+    {% endfor %}
+  </ol>
+  <a href="{% url 'line_form' %}"> Nueva consulta</a><br>
+  <a href="{% url 'home' %}"> Volver al inicio</a>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Estación</title>
+</head>
+<body>
+  <h1>Consultar línea de una estación</h1>
+  <form method="post">
+    {% csrf_token %}
+    <label for="estacion">Selecciona una estación:</label>
+    <select name="codigo_linea" id="estacion">
+      {% for estacion in estaciones %}
+        <option value="{{ estacion.codigo_linea }}">{{ estacion.nombre_estacion }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Mostrar línea</button>
+  </form>
+  <a href="{% url 'home' %}"> Volver al inicio</a>
+</body>
+</html>

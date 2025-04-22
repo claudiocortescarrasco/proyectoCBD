@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Línea de {{ estacion.nombre_estacion }}</title>
+</head>
+<body>
+  <h1>Estación: {{ estacion.nombre_estacion }}</h1>
+  <p>
+    <strong>Línea:</strong>
+    {{ linea.nombre_linea }} ({{ linea.codigo_linea }})
+  </p>
+  <h2>Otras estaciones de la misma línea</h2>
+  <ul>
+    {% for estacion in linea.estaciones %}
+      <li>{{ estacion.nombre_estacion }}</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'station_form' %}"> Nueva consulta</a><br>
+  <a href="{% url 'home' %}"> Volver al inicio</a>
+</body>
+</html>
