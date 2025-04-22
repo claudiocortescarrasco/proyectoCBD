@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from neomodel import config
+import os
 
-config.DATABASE_URL = "bolt://neo4j:neo4j-password@localhost:7687"
+# config.DATABASE_URL = "bolt://neo4j:neo4j-password@localhost:7687"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
+    # 'app',
+    'app.apps.AppConfigCBD',
     'templates'
 ]
 
@@ -130,3 +132,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 NEO4J_HOST = 'localhost'
 NEO4J_USERNAME = 'neo4j'
 NEO4J_PASSWORD = 'neo4j-password'
+NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:neo4j-password@localhost:7687'
