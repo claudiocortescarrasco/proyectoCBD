@@ -6,6 +6,20 @@ from app.models import Estacion, Tramo
 url = "https://api.tmb.cat/v1/transit"
 
 
+def get_all_code_lines():
+    # Get all data from the API
+    app_id = "bfceaf53"
+    app_key = "fa22db17bc133e3616538c432106cd78"
+    # route = url + "/linies/metro?app_id=" + app_id + "&app_key=" + app_key
+    route = url + "/linies/metro?app_id=" + app_id + "&app_key=" + app_key
+    response = requests.get(route)
+    res = response.json()
+    codis_linies = []
+    for line in res['features']:
+        codis_linies.append(line['properties']['CODI_LINIA'])
+
+    return codis_linies
+
 def get_all_estations():
     # Get all data from the API
     app_id = "bfceaf53"
@@ -26,13 +40,13 @@ def get_all_estations():
     return list
 
 
-def get_all_trams():
+def get_all_trams(codis_linies_list):
     # Get all data from the API
     app_id = "bfceaf53"
     app_key = "fa22db17bc133e3616538c432106cd78"
     list = []
-    num_linias = 11
-    for l in range(num_linias + 1):
+    # num_linias = 11
+    for l in codis_linies_list:
         route = url + "/linies/metro/" + str(l) + "/trams?app_id=" + app_id + "&app_key=" + app_key
         response = requests.get(route)
         res = response.json()
@@ -66,28 +80,83 @@ def guardar_estaciones(estaciones):
                 linias=linias
             ).save()
 
+# def guardar_tramos(tramos):
+#     for t in tramos:
+#         try:
+#             est_ini = Estacion.nodes.get_or_none(codi_estacio=str(t["CODI_ESTACIO_INI"]))
+#             est_fi = Estacion.nodes.get_or_none(codi_estacio=str(t["CODI_ESTACIO_FI"]))
+
+#             # Comprobar si ambas estaciones existen
+#             if est_ini is None or est_fi is None:
+#                 print(f"Estación no encontrada: {t['CODI_ESTACIO_INI']} o {t['CODI_ESTACIO_FI']}")
+#                 continue
+
+#             nom_linia = t["NOM_LINIA"]
+
+#             # Comprobar si ambas estaciones contienen la línea del tramo
+#             if (nom_linia in est_ini.linias) and (nom_linia in est_fi.linias):
+#                 if est_ini.conecta_con.relationship(est_fi) is None:
+#                     est_ini.conecta_con.connect(est_fi, {
+#                         "codi_tram_linia": t["CODI_TRAM_LINIA"],
+#                         "codi_estacio_ini": t["CODI_ESTACIO_INI"],
+#                         "nom_estacio_ini": t["NOM_ESTACIO_INI"],
+#                         "codi_estacio_fi": t["CODI_ESTACIO_FI"],
+#                         "nom_estacio_fi": t["NOM_ESTACIO_FI"],
+#                         "ordre_tram": t["ORDRE_TRAM"],
+#                         "nom_linia": nom_linia,
+#                         "origen_servei": t["ORIGEN_SERVEI"],
+#                         "desti_servei": t["DESTI_SERVEI"],
+#                         "longitud": t["LONGITUD"]
+#                     })
+#             else:
+#                 print(f"No coincide la línea '{nom_linia}' en estaciones {est_ini.nom_estacio} y {est_fi.nom_estacio}")
+
+#         except Exception as e:
+#             print(f"Error general al guardar tramo: {e}")
+
+
 def guardar_tramos(tramos):
     for t in tramos:
         try:
-            est_ini = Estacion.nodes.get(codi_estacio=str(t["CODI_ESTACIO_INI"]))
-            est_fi = Estacion.nodes.get(codi_estacio=str(t["CODI_ESTACIO_FI"]))
+            # Obtener nombres exactos desde el tramo
+            nom_estacio_ini = t["NOM_ESTACIO_INI"].strip()
+            nom_estacio_fi = t["NOM_ESTACIO_FI"].strip()
 
-            # Verificamos si ya existe la relación
-            if est_ini.conecta_con.relationship(est_fi) is None:
-                est_ini.conecta_con.connect(est_fi, {
-                    "codi_tram_linia": t["CODI_TRAM_LINIA"],
-                    "codi_estacio_ini": t["CODI_ESTACIO_INI"],
-                    "nom_estacio_ini": t["NOM_ESTACIO_INI"],
-                    "codi_estacio_fi": t["CODI_ESTACIO_FI"],
-                    "nom_estacio_fi": t["NOM_ESTACIO_FI"],
-                    "ordre_tram": t["ORDRE_TRAM"],
-                    "nom_linia": t["NOM_LINIA"],
-                    "origen_servei": t["ORIGEN_SERVEI"],
-                    "desti_servei": t["DESTI_SERVEI"],
-                    "longitud": t["LONGITUD"]
-                })
-        except Estacion.DoesNotExist:
-            print(f"Estación no encontrada: {t['CODI_ESTACIO_INI']} o {t['CODI_ESTACIO_FI']}")
+            # Buscar estaciones por nombre exacto
+            est_ini = Estacion.nodes.get_or_none(nom_estacio=nom_estacio_ini)
+            est_fi = Estacion.nodes.get_or_none(nom_estacio=nom_estacio_fi)
+
+            if est_ini is None or est_fi is None:
+                print(f"⚠️ Estación no encontrada: {nom_estacio_ini} o {nom_estacio_fi}")
+                continue
+
+            nom_linia = t["NOM_LINIA"].strip()
+
+            # Ahora sí verificamos adicionalmente que las estaciones contengan la línea
+            if nom_linia in est_ini.linias and nom_linia in est_fi.linias:
+                # Comprobamos si la relación ya existe para evitar duplicados
+                if est_ini.conecta_con.relationship(est_fi) is None:
+                    est_ini.conecta_con.connect(est_fi, {
+                        "codi_tram_linia": t["CODI_TRAM_LINIA"],
+                        "ordre_tram": t["ORDRE_TRAM"],
+                        "nom_linia": nom_linia,
+                        "origen_servei": t["ORIGEN_SERVEI"],
+                        "desti_servei": t["DESTI_SERVEI"],
+                        "longitud": t["LONGITUD"],
+                        # Datos opcionales (estaciones origen/destino):
+                        "nom_estacio_ini": nom_estacio_ini,
+                        "nom_estacio_fi": nom_estacio_fi,
+                        "codi_estacio_ini": t["CODI_ESTACIO_INI"],
+                        "codi_estacio_fi": t["CODI_ESTACIO_FI"],
+                    })
+                else:
+                    print(f"✅ Ya existe relación entre {nom_estacio_ini} y {nom_estacio_fi}")
+            else:
+                print(f"⚠️ No coincide línea '{nom_linia}' en estaciones {nom_estacio_ini} y {nom_estacio_fi}")
+
+        except Exception as e:
+            print(f"❌ Error al guardar tramo {nom_estacio_ini}→{nom_estacio_fi}: {e}")
+
 
 
 def guardar_datos():
@@ -96,9 +165,10 @@ def guardar_datos():
     guardar_estaciones(estaciones)
 
     # Guardar tramos
-    tramos = get_all_trams()
+    tramos = get_all_trams(get_all_code_lines())
     guardar_tramos(tramos)
 
 # print(get_all_estations())
 # print(get_all_trams())
 guardar_datos()
+# print(get_all_code_lines())
