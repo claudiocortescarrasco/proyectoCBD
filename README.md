@@ -18,3 +18,15 @@ Run the project:
 ```
 python manage.py runserver
 ```
+
+To load the data in the database:
+```
+python manage.py cargar_datos
+```
+
+To activate de Neo4j service, do:
+```
+sudo systemctl start neo4j
+```
+
+The database browser is available in `http://localhost:7474/browser`
