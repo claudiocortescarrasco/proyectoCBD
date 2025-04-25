@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ruta de {{ origen.nombre_estacion }} a {{ destino.nombre_estacion }}</title>
+</head>
+<body>
+  <h1>De {{ origen.nombre_estacion }} a {{ destino.nombre_estacion }}</h1>
+  <ul>
+    {% for estacion in ruta %}
+      <li>{{ estacion.nombre_estacion }}</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'route_form' %}"> Nueva consulta</a><br>
+  <a href="{% url 'home' %}"> Volver al inicio</a>
+</body>
+</html>

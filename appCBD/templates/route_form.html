@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Ruta</title>
+</head>
+<body>
+  <h1>Estaciones intermedias</h1>
+  <form method="post">
+    {% csrf_token %}
+    <label for="origen">Parada origen:</label>
+    <select name="id_origen" id="origen">
+      {% for estacion in estaciones %}
+        <option value="{{ estacion.id_estacion }}">{{ estacion.nombre_estacion }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <label for="destino">Parada destino:</label>
+    <select name="id_destino" id="destino">
+      {% for estacion in estaciones %}
+        <option value="{{ estacion.id_estacion }}">{{ estacion.nombre_estacion }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <button type="submit">Mostrar ruta</button>
+  </form>
+  <a href="{% url 'home' %}"> Volver al inicio</a>
+</body>
+</html>

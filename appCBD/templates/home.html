@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Metro · Inicio</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>Aplicación de Metro</h1>
+
+    <div class="actions">
+      <form method="post" action="{% url 'load_stations' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn">Cargar estaciones desde API</button>
+      </form>
+  
+      <a href="{% url 'lines_list' %}" class="btn">Listar líneas y estaciones</a>
+
+      <a href="{% url 'line_form' %}" class="btn">Consultar estaciones por línea</a>
+
+      <a href="{% url 'station_form' %}" class="btn">Consultar línea de una estación</a>
+
+      <a href="{% url 'route_form' %}" class="btn">Estaciones intermedias</a>
+    </div>
+  </div>
+</body>
+</html>
