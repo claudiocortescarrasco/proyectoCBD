@@ -1,21 +1,29 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Consulta de Línea</title>
-</head>
-<body>
-  <h1>Consultar estaciones por línea</h1>
-  <form method="post">
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Consultar estaciones por línea</h2>
+
+<form method="post" action="{% url 'line_stations' %}">
     {% csrf_token %}
     <label for="linea">Selecciona una línea:</label>
-    <select name="codigo_linea" id="linea">
-      {% for linea in lineas %}
-        <option value="{{ linea.codigo_linea }}">{{ linea.nombre_linea }}</option>
-      {% endfor %}
+    <select name="linea" id="linea" required>
+        <option value="">--Selecciona una línea--</option>
+        {% for linea in lineas %}
+            <option value="{{ linea }}"
+                {% if linea == linea_seleccionada %}selected{% endif %}
+            >{{ linea }}</option>
+        {% endfor %}
     </select>
-    <button type="submit">Mostrar estaciones</button>
-  </form>
-  <a href="{% url 'home' %}"> Volver al inicio</a>
-</body>
-</html>
+    <br>
+    <button type="submit" class="btn">Mostrar estaciones</button>
+</form>
+
+{% if estaciones %}
+    <h3>Estaciones de la línea {{ linea_seleccionada }}:</h3>
+    <ul>
+        {% for estacion in estaciones %}
+            <li>{{ estacion }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

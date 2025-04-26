@@ -80,40 +80,6 @@ def guardar_estaciones(estaciones):
                 linias=linias
             ).save()
 
-# def guardar_tramos(tramos):
-#     for t in tramos:
-#         try:
-#             est_ini = Estacion.nodes.get_or_none(codi_estacio=str(t["CODI_ESTACIO_INI"]))
-#             est_fi = Estacion.nodes.get_or_none(codi_estacio=str(t["CODI_ESTACIO_FI"]))
-
-#             # Comprobar si ambas estaciones existen
-#             if est_ini is None or est_fi is None:
-#                 print(f"Estación no encontrada: {t['CODI_ESTACIO_INI']} o {t['CODI_ESTACIO_FI']}")
-#                 continue
-
-#             nom_linia = t["NOM_LINIA"]
-
-#             # Comprobar si ambas estaciones contienen la línea del tramo
-#             if (nom_linia in est_ini.linias) and (nom_linia in est_fi.linias):
-#                 if est_ini.conecta_con.relationship(est_fi) is None:
-#                     est_ini.conecta_con.connect(est_fi, {
-#                         "codi_tram_linia": t["CODI_TRAM_LINIA"],
-#                         "codi_estacio_ini": t["CODI_ESTACIO_INI"],
-#                         "nom_estacio_ini": t["NOM_ESTACIO_INI"],
-#                         "codi_estacio_fi": t["CODI_ESTACIO_FI"],
-#                         "nom_estacio_fi": t["NOM_ESTACIO_FI"],
-#                         "ordre_tram": t["ORDRE_TRAM"],
-#                         "nom_linia": nom_linia,
-#                         "origen_servei": t["ORIGEN_SERVEI"],
-#                         "desti_servei": t["DESTI_SERVEI"],
-#                         "longitud": t["LONGITUD"]
-#                     })
-#             else:
-#                 print(f"No coincide la línea '{nom_linia}' en estaciones {est_ini.nom_estacio} y {est_fi.nom_estacio}")
-
-#         except Exception as e:
-#             print(f"Error general al guardar tramo: {e}")
-
 
 def guardar_tramos(tramos):
     for t in tramos:

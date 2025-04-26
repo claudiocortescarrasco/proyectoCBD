@@ -1,29 +1,27 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Consulta de Ruta</title>
-</head>
-<body>
-  <h1>Estaciones intermedias</h1>
-  <form method="post">
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Consultar estaciones intermedias</h2>
+
+<form method="post" action="{% url 'route_stations' %}">
     {% csrf_token %}
-    <label for="origen">Parada origen:</label>
-    <select name="id_origen" id="origen">
-      {% for estacion in estaciones %}
-        <option value="{{ estacion.id_estacion }}">{{ estacion.nombre_estacion }}</option>
-      {% endfor %}
+    <label for="origen">Estación de origen:</label>
+    <select name="origen" id="origen" required>
+        <option value="">--Selecciona origen--</option>
+        {% for estacion in estaciones %}
+            <option value="{{ estacion }}">{{ estacion }}</option>
+        {% endfor %}
     </select>
-    <br>
-    <label for="destino">Parada destino:</label>
-    <select name="id_destino" id="destino">
-      {% for estacion in estaciones %}
-        <option value="{{ estacion.id_estacion }}">{{ estacion.nombre_estacion }}</option>
-      {% endfor %}
+
+    <label for="destino">Estación de destino:</label>
+    <select name="destino" id="destino" required>
+        <option value="">--Selecciona destino--</option>
+        {% for estacion in estaciones %}
+            <option value="{{ estacion }}">{{ estacion }}</option>
+        {% endfor %}
     </select>
+
     <br>
-    <button type="submit">Mostrar ruta</button>
-  </form>
-  <a href="{% url 'home' %}"> Volver al inicio</a>
-</body>
-</html>
+    <button type="submit">Buscar ruta</button>
+</form>
+{% endblock %}

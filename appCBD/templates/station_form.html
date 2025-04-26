@@ -1,21 +1,30 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Consulta de Estación</title>
-</head>
-<body>
-  <h1>Consultar línea de una estación</h1>
-  <form method="post">
-    {% csrf_token %}
-    <label for="estacion">Selecciona una estación:</label>
-    <select name="codigo_linea" id="estacion">
-      {% for estacion in estaciones %}
-        <option value="{{ estacion.codigo_linea }}">{{ estacion.nombre_estacion }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">Mostrar línea</button>
-  </form>
-  <a href="{% url 'home' %}"> Volver al inicio</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Consultar línea de una estación</h2>
+
+<form method="post" action="{% url 'station_form' %}">
+  {% csrf_token %}
+  <label for="estacion">Selecciona una estación:</label>
+  <select name="estacion" id="estacion" required>
+    <option value="">--Selecciona una estación--</option>
+    {% for estacion in estaciones %}
+      <option value="{{ estacion }}">{{ estacion }}</option>
+    {% endfor %}
+  </select>
+  <br>
+  <button type="submit">Consultar</button>
+</form>
+
+{% if lineas_formateadas %}
+  <h3>
+    La estación <strong>{{ estacion_seleccionada }}</strong> pertenece a 
+    {% if cantidad_lineas > 1 %}
+      las líneas:
+    {% else %}
+      la línea:
+    {% endif %}
+    {{ lineas_formateadas }}
+  </h3>
+{% endif %}
+{% endblock %}

@@ -1,25 +1,13 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Listado de Líneas de metro</title>
-</head>
-<body>
-  <h1>Listado de líneas de metro</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Líneas y estaciones</h2>
+{% for linea, estaciones in lineas.items %}
+  <h3>{{ linea }}</h3>
   <ul>
-    {% for linea in lineas %}
-      <li>
-        <strong>{{ linea.nombre_linea }} (Código: {{ linea.codigo_linea }})</strong><br>
-        {{ linea.descripcion_linea }}<br>
-        Origen: {{ linea.origen_linea }} — Destino: {{ linea.destino_linea }}
-        <ul>
-          {% for estacion in linea.estaciones %}
-            <li>{{ estacion.nombre_estacion }}</li>
-          {% endfor %}
-        </ul>
-      </li>
+    {% for estacion in estaciones %}
+      <li>{{ estacion }}</li>
     {% endfor %}
   </ul>
-  <a href="{% url 'home' %}"> Volver al inicio</a>
-</body>
-</html>
+{% endfor %}
+{% endblock %}

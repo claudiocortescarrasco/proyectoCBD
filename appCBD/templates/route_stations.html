@@ -1,17 +1,20 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Ruta de {{ origen.nombre_estacion }} a {{ destino.nombre_estacion }}</title>
-</head>
-<body>
-  <h1>De {{ origen.nombre_estacion }} a {{ destino.nombre_estacion }}</h1>
-  <ul>
-    {% for estacion in ruta %}
-      <li>{{ estacion.nombre_estacion }}</li>
-    {% endfor %}
-  </ul>
-  <a href="{% url 'route_form' %}"> Nueva consulta</a><br>
-  <a href="{% url 'home' %}"> Volver al inicio</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load custom_filters %} {# <-- Aquí cargas tu filtro regex_findall #}
+
+{% block content %}
+  <h2>Ruta desde {{ origen }} hasta {{ destino }}</h2>
+
+  {% if estaciones %}
+    <ol>
+      {% for estacion in estaciones %}
+        <li>
+          {{ estacion.nombre }} -{% for linea in estacion.lineas %}
+            [{{ linea }}]
+          {% endfor %}
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p>No se encontró un camino entre las estaciones seleccionadas.</p>
+  {% endif %}
+{% endblock %}
