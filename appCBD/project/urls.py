@@ -20,19 +20,19 @@ from app.views import (
     home,
     load_stations, lines_list, line_form, line_stations,
     station_form, station_line,
-    route_form, route_stations
+    route_form, route_stations, line_stations_by_pk
 )
 
 urlpatterns = [
     path('', home, name='home'),
     path('stations/load/',     load_stations, name='load_stations'),
     path('lines/',             lines_list,    name='lines_list'),
-    path('lines/query/',       line_form,     name='line_form'),
-    path('lines/<int:pk>/',    line_stations, name='line_stations'),
+    path('lines/query/',       line_form,     name='line_form'),  # Formulario
+    path('lines/query/result/', line_stations, name='line_stations'),  # Resultado POST
+    path('lines/<int:pk>/',    line_stations_by_pk, name='line_stations_by_pk'),  # Nueva
     path('stations/query/',    station_form,  name='station_form'),
     path('stations/<int:pk>/', station_line,  name='station_line'),
     path('route/query/',       route_form,    name='route_form'),
     path('route/result/',      route_stations,name='route_stations'),
     path('admin/', admin.site.urls),
 ]
-    
