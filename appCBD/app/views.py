@@ -17,9 +17,9 @@ def home(request):
 def load_stations(request):
     try:
         guardar_datos()
-        messages.success(request, "✅ Datos cargados correctamente desde la API.")
+        messages.success(request, "Datos cargados correctamente desde la API.")
     except Exception as e:
-        messages.error(request, f"❌ Error al cargar los datos: {str(e)}")
+        messages.error(request, f"Error al cargar los datos: {str(e)}")
     return redirect("home")
 
 
@@ -31,7 +31,7 @@ def lines_list(request):
         for est_fi in estacion.conecta_con:
             rel = estacion.conecta_con.relationship(
                 est_fi
-            )  # El Tramo que une estacion -> est_fi
+            )
 
             nombre_linea = rel.nom_linia
             orden_tramo = rel.ordre_tram
@@ -43,7 +43,6 @@ def lines_list(request):
                 (orden_tramo, rel.nom_estacio_ini, rel.nom_estacio_fi)
             )
 
-    # Ahora ordenamos las estaciones por orden de tramo
     resultado_final = {}
 
     for linea, tramos in lineas.items():
@@ -65,7 +64,6 @@ def line_form(request):
     lineas_set = set()
 
     for estacion in Estacion.nodes.all():
-        # Regex mejorada que solo permite N o S después del número
         lineas_encontradas = re.findall(r"(?:L\d{1,2}(?:N|S)?|FM)", estacion.linias)
         lineas_set.update(lineas_encontradas)
 
@@ -85,7 +83,6 @@ def line_stations(request):
 
         estaciones = sorted(estaciones)
 
-        # Volver a reconstruir el dropdown
         lineas_set = set()
         for estacion in Estacion.nodes.all():
             lineas_encontradas = re.findall(r"(?:L\d{1,2}(?:N|S)?|FM)", estacion.linias)
@@ -119,13 +116,10 @@ def station_form(request):
         estacion = Estacion.nodes.get_or_none(nom_estacio=nombre_estacion)
 
         if estacion:
-            # Usamos regex para separar todas las líneas de forma correcta
             lineas_separadas = re.findall(r"(?:L\d{1,2}(?:N|S)?|FM)", estacion.linias)
 
-            # Formateamos poniendo corchetes alrededor de cada línea
             lineas_formateadas = " ".join(f"[{linea}]" for linea in lineas_separadas)
 
-            # Para mostrar "línea" o "líneas" dependiendo del número
             cantidad_lineas = len(lineas_separadas)
 
             return render(
@@ -152,11 +146,9 @@ def station_line(request, pk):
     try:
         estacion = Estacion.nodes.get(codi_estacio=str(pk))
 
-        # Separamos en grupos de 3 caracteres
         lineas_crudas = estacion.linias
         lineas = [lineas_crudas[i : i + 3] for i in range(0, len(lineas_crudas), 3)]
 
-        # Formato tipo "L1, L9S y L10S"
         if len(lineas) == 1:
             lineas_formateadas = lineas[0]
         else:
@@ -195,9 +187,8 @@ def route_stations(request):
 
             results, _ = db.cypher_query(query, {"origen": origen, "destino": destino})
             if results and results[0]:
-                estaciones = results[0][0]  # Lista de estaciones (dicts)
-
-                # 🧠 Formateamos las líneas correctamente ya aquí:
+                estaciones = results[0][0]  
+                
                 for estacion in estaciones:
                     lineas_raw = estacion["lineas"] if estacion["lineas"] else ""
                     estacion["lineas"] = re.findall(r"L\d{1,2}(?:N|S)?|FM", lineas_raw)
